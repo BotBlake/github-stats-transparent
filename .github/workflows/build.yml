@@ -1,0 +1,27 @@
+name: Build Generator Binary
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-go@v61
+
+      - name: Build Linux binary
+        run: |
+          GOOS=linux GOARCH=amd64 CGO_ENABLED=0 \
+            go build -o bin/linux-amd64 ./cmd/generate
+
+      - name: Commit updated binary
+        run: |
+          git config --global user.name "github-stats[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add bin/linux-amd64
+          git commit -m "Update generator binary" || echo
+          git push

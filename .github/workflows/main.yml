@@ -23,16 +23,10 @@ jobs:
     # Checks-out repository under $GITHUB_WORKSPACE, so the job can access it
     - uses: actions/checkout@v6
 
-    # Set up UV to manage Python versions
-    - name: Install uv and set python version
-      uses: astral-sh/setup-uv@v7
-      with:
-        enable-cache: true
-        python-version: '3.12'
-
-    # Generate all statistics images
-    - name: Generate images
-      run: uv run generate_images.py
+    - name: Run generator
+      run: |
+          chmod +x bin/linux-amd64
+          bin/linux-amd64
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
