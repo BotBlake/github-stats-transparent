@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: actions/setup-go@v61
+      - uses: actions/setup-go@v6
 
       - name: Build Linux binary
         run: |
