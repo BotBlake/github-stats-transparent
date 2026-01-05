@@ -393,7 +393,7 @@ func (s *Stats) String() string {
 		s.Forks,
 		len(s.Repos),
 		s.Views,
-		s.LinesChanged,
+		s.Lines,
 		s.TotalContrib,
 	)
 }
