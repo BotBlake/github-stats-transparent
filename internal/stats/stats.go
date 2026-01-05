@@ -236,26 +236,50 @@ func (s *Stats) collectLinesChanged(ctx context.Context) (int, int, error) {
 		go func() {
 			defer wg.Done()
 
-			resp, err := s.Client.QueryREST(ctx, "/repos/"+repo+"/stats/contributors")
+			raw, err := s.Client.QueryREST(ctx, "/repos/"+repo+"/stats/contributors")
 			if err != nil {
 				return
 			}
 
-			for _, a := range resp {
-				author, ok := a.(map[string]any)["author"].(map[string]any)
+			// The response MUST be an array
+			arr, ok := raw.([]any)
+			if !ok {
+				return
+			}
+
+			for _, item := range arr {
+				obj, ok := item.(map[string]any)
 				if !ok {
 					continue
 				}
-				if author["login"] != s.Username {
+
+				authorObj, ok := obj["author"].(map[string]any)
+				if !ok {
 					continue
 				}
 
-				for _, w := range a.(map[string]any)["weeks"].([]any) {
-					week := w.(map[string]any)
+				login, ok := authorObj["login"].(string)
+				if !ok || login != s.Username {
+					continue
+				}
+
+				weeks, ok := obj["weeks"].([]any)
+				if !ok {
+					continue
+				}
+
+				for _, w := range weeks {
+					week, ok := w.(map[string]any)
+					if !ok {
+						continue
+					}
+
+					a, _ := week["a"].(float64)
+					d, _ := week["d"].(float64)
 
 					mu.Lock()
-					add += int(week["a"].(float64))
-					del += int(week["d"].(float64))
+					add += int(a)
+					del += int(d)
 					mu.Unlock()
 				}
 			}
