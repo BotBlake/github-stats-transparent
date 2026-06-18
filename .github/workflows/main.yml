@@ -21,7 +21,7 @@ jobs:
     # Sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out repository under $GITHUB_WORKSPACE, so the job can access it
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     # Set up UV to manage Python versions
     - name: Install uv and set python version
